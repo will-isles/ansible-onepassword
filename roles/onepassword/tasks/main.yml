@@ -1,0 +1,24 @@
+- name: Add 1Password yum repository
+  ansible.builtin.yum_repository:
+    name: "{{ onepassword_repo_name }}"
+    description: "{{ onepassword_repo_description }}"
+    baseurl: "{{ onepassword_repo_baseurl }}"
+    enabled: true
+    gpgcheck: true
+    gpgkey: "{{ onepassword_gpgkey_url }}"
+    repo_gpgcheck: true
+    state: present
+  become: true
+  tags: [onepassword]
+
+- name: Build package list
+  ansible.builtin.set_fact:
+    onepassword_packages: "{{ ['1password'] + (onepassword_install_cli | bool | ternary(['1password-cli'], [])) }}"
+  tags: [onepassword]
+
+- name: Ensure 1Password packages are layered via rpm-ostree
+  community.general.rpm_ostree_pkg:
+    name: "{{ onepassword_packages }}"
+    state: present
+  become: true
+  tags: [onepassword]

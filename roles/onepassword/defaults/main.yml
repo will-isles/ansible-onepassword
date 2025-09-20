@@ -1,0 +1,14 @@
+---
+# 1Password rpm-ostree installation defaults
+
+# stable or beta
+onepassword_channel: stable
+
+# Also install the CLI (`op`)
+onepassword_install_cli: false
+
+# Repo settings
+onepassword_repo_name: "1password"
+onepassword_repo_description: "1Password {{ onepassword_channel | capitalize }} Channel"
+onepassword_repo_baseurl: "https://downloads.1password.com/linux/rpm/{{ onepassword_channel }}/$basearch"
+onepassword_gpgkey_url: "https://downloads.1password.com/linux/keys/1password.asc"

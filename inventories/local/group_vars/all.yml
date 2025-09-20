@@ -1,0 +1,5 @@
+---
+# Toggle defaults for the 1Password installation role.
+
+# onepassword_channel: stable
+# onepassword_install_cli: false
