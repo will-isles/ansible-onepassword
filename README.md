@@ -21,7 +21,22 @@ Project Layout
 Requirements
 ------------
 
-- Ansible 9+ (e.g. `pipx install --include-deps ansible`).
+- Homebrew on your Fedora Atomic host. On a fresh system run:
+
+  ```sh
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bash_profile
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+  ```
+
+  The profile line persists `brew` in future shells; adjust the file name for
+  your preferred shell.
+- Ansible 9+ installed via Homebrew:
+
+  ```sh
+  brew install ansible
+  ```
+
 - The `community.general` collection (install with
   `ansible-galaxy collection install -r collections/requirements.yml`).
 - A Fedora Atomic (rpm-ostree based) system where you can escalate with sudo.
