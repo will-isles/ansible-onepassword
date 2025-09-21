@@ -1,0 +1,49 @@
+---
+- name: Configure 1Password SSH agent integration
+  when: (onepassword_ssh_agent_enabled | bool)
+  tags: [onepassword, onepassword_ssh_agent]
+  block:
+    - name: Ensure SSH configuration directory exists
+      ansible.builtin.file:
+        path: "{{ onepassword_ssh_agent_ssh_dir }}"
+        state: directory
+        mode: "0700"
+      when: onepassword_ssh_agent_manage_ssh_config or onepassword_ssh_agent_create_symlink
+
+    - name: Build OpenSSH IdentityAgent block
+      ansible.builtin.set_fact:
+        onepassword_ssh_agent_config_block: "{{ onepassword_ssh_agent_ssh_hosts | map('regex_replace', '^(.*)$', 'Host \\1\n  IdentityAgent ' ~ onepassword_ssh_agent_socket) | join('\n') }}"
+      when: onepassword_ssh_agent_manage_ssh_config
+
+    - name: Configure OpenSSH to use the 1Password agent socket
+      ansible.builtin.blockinfile:
+        path: "{{ onepassword_ssh_agent_ssh_config_file }}"
+        create: true
+        mode: "0600"
+        block: "{{ onepassword_ssh_agent_config_block }}"
+        marker: "# {mark} ANSIBLE MANAGED BLOCK: 1Password SSH agent"
+      when: onepassword_ssh_agent_manage_ssh_config
+
+    - name: Ensure environment.d directory exists
+      ansible.builtin.file:
+        path: "{{ onepassword_ssh_agent_env_dir }}"
+        state: directory
+        mode: "0755"
+      when: onepassword_ssh_agent_manage_env
+
+    - name: Export SSH_AUTH_SOCK for the 1Password agent
+      ansible.builtin.copy:
+        dest: "{{ onepassword_ssh_agent_env_file }}"
+        mode: "0644"
+        content: |-
+          # Managed by Ansible - 1Password SSH agent socket
+          SSH_AUTH_SOCK={{ onepassword_ssh_agent_socket }}
+      when: onepassword_ssh_agent_manage_env
+
+    - name: Create optional shorthand symlink to the 1Password agent socket
+      ansible.builtin.file:
+        src: "{{ onepassword_ssh_agent_socket }}"
+        dest: "{{ onepassword_ssh_agent_symlink_path }}"
+        state: link
+        force: true
+      when: onepassword_ssh_agent_create_symlink

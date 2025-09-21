@@ -3,3 +3,7 @@
 
 # onepassword_channel: stable
 # onepassword_install_cli: false
+# onepassword_ssh_agent_enabled: false
+# onepassword_ssh_agent_manage_env: true
+# onepassword_ssh_agent_manage_ssh_config: true
+# onepassword_ssh_agent_create_symlink: false
