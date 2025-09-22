@@ -1,0 +1,9 @@
+---
+- name: Configure Git tooling
+  hosts: local
+  gather_facts: false
+  any_errors_fatal: true
+  roles:
+    - role: onepassword_ssh_agent
+      when: (onepassword_ssh_agent_enabled | default(false)) | bool
+    - role: github_projects

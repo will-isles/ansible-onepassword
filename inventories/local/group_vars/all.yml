@@ -7,3 +7,15 @@ onepassword_ssh_agent_enabled: true
 # onepassword_ssh_agent_manage_env: true
 # onepassword_ssh_agent_manage_ssh_config: true
 # onepassword_ssh_agent_create_symlink: false
+
+# github_projects variables control where repositories get cloned and which
+# repositories to manage.
+git_projects_clone_root: "~/Projects"
+git_projects_repositories:
+  - name: ansible-onepassword
+    repo: https://github.com/will-isles/ansible-onepassword
+  - name: ansible-linux
+    repo: https://github.com/will-isles/ansible-linux
+
+git_projects_git_user_name: null
+git_projects_git_user_email: null

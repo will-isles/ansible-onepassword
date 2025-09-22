@@ -1,9 +1,3 @@
 ---
-- name: Install 1Password
-  hosts: local
-  gather_facts: false
-  any_errors_fatal: true
-  roles:
-    - role: onepassword
-    - role: onepassword_ssh_agent
-      when: (onepassword_ssh_agent_enabled | default(false)) | bool
+- import_playbook: setup_onepassword.yml
+- import_playbook: setup_git.yml
