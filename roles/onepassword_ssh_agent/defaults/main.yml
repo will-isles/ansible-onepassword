@@ -1,0 +1,27 @@
+---
+# Defaults for configuring the 1Password SSH agent on Linux
+
+# Set to true to configure shell and OpenSSH integration for the 1Password SSH agent.
+onepassword_ssh_agent_enabled: false
+
+# Home directory where configuration files will be written.
+onepassword_ssh_agent_home: "{{ lookup('env', 'HOME') }}"
+
+# Path to the agent socket provided by the 1Password desktop app.
+onepassword_ssh_agent_socket: "{{ onepassword_ssh_agent_home }}/.1password/agent.sock"
+
+# Manage ~/.config/environment.d to export SSH_AUTH_SOCK for login shells.
+onepassword_ssh_agent_manage_env: true
+onepassword_ssh_agent_env_dir: "{{ onepassword_ssh_agent_home }}/.config/environment.d"
+onepassword_ssh_agent_env_file: "{{ onepassword_ssh_agent_env_dir }}/1password-ssh-agent.conf"
+
+# Manage ~/.ssh/config to point IdentityAgent at the 1Password socket.
+onepassword_ssh_agent_manage_ssh_config: true
+onepassword_ssh_agent_ssh_dir: "{{ onepassword_ssh_agent_home }}/.ssh"
+onepassword_ssh_agent_ssh_config_file: "{{ onepassword_ssh_agent_ssh_dir }}/config"
+onepassword_ssh_agent_ssh_hosts:
+  - "*"
+
+# Optionally expose the socket at ~/.ssh/agent.sock for tools that expect it there.
+onepassword_ssh_agent_create_symlink: false
+onepassword_ssh_agent_symlink_path: "{{ onepassword_ssh_agent_ssh_dir }}/agent.sock"

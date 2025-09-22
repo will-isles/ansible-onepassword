@@ -5,3 +5,5 @@
   any_errors_fatal: true
   roles:
     - role: onepassword
+    - role: onepassword_ssh_agent
+      when: (onepassword_ssh_agent_enabled | default(false)) | bool
