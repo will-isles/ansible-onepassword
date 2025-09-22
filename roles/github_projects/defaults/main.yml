@@ -1,0 +1,13 @@
+---
+# Configure locations and repositories managed by the github_projects role.
+git_projects_clone_root: "~/Projects-testing"
+
+git_projects_repositories:
+  - name: ansible-onepassword
+    repo: https://github.com/will-isles/ansible-onepassword
+  - name: ansible-linux
+    repo: https://github.com/will-isles/ansible-linux
+
+# Optional git identity defaults used when the host has no global configuration.
+git_projects_git_user_name: null
+git_projects_git_user_email: null

@@ -14,11 +14,17 @@ Project Layout
   connection).
 - `inventories/local/group_vars/all.yml` – central place to set the
   `onepassword_*` variables.
-- `playbooks/setup.yml` – entry play that includes the `onepassword` role.
+- `playbooks/setup.yml` – umbrella playbook that imports the individual setup
+  plays.
+- `playbooks/setup_onepassword.yml` – installs the `onepassword` role.
+- `playbooks/setup_git.yml` – configures the SSH agent and clones GitHub
+  projects.
 - `roles/onepassword/` – installs the repository and layers packages via
   `community.general.rpm_ostree_pkg`.
 - `roles/onepassword_ssh_agent/` – configures dotfiles for the 1Password SSH
   agent on Linux when enabled.
+- `roles/github_projects/` – clones configurable GitHub repositories into a
+  configurable directory under the calling user.
 
 Requirements
 ------------
@@ -59,6 +65,15 @@ Override the defaults in `inventories/local/group_vars/all.yml` or with `-e`:
   (default `['*']`).
 - `onepassword_ssh_agent_create_symlink` – `false` (default). Set to `true` to
   link `~/.ssh/agent.sock` to the 1Password socket for legacy tooling.
+- `git_projects_clone_root` – `~/Projects-testing` (default). Base directory
+  where repositories are cloned.
+- `git_projects_repositories` – default list includes the
+  `will-isles/ansible-onepassword` and `will-isles/ansible-linux` repositories.
+  Override with a list of dictionaries containing `repo` URLs and optional
+  `name`/`dest` keys to manage additional projects.
+- `git_projects_git_user_name` / `git_projects_git_user_email` – set these when
+  you want the role to initialize your global Git identity. They default to
+  `null` so existing Git configurations are left untouched.
 
 Usage
 -----
@@ -68,6 +83,9 @@ Run against localhost and supply sudo credentials when prompted:
 ```sh
 ansible-playbook playbooks/setup.yml --ask-become-pass
 ```
+
+You can target only part of the workflow with
+`playbooks/setup_onepassword.yml` or `playbooks/setup_git.yml` as needed.
 
 You can limit to check mode first:
 

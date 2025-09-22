@@ -1,0 +1,62 @@
+---
+- name: Check existing git user.name
+  ansible.builtin.command: git config --global user.name
+  register: git_projects_existing_user_name
+  changed_when: false
+  failed_when: false
+  tags: [github_projects]
+
+- name: Configure git user.name when missing
+  when: git_projects_existing_user_name.rc != 0 or (git_projects_existing_user_name.stdout | default('') | trim == '')
+  tags: [github_projects]
+  block:
+    - name: Ensure git user.name default is provided
+      ansible.builtin.assert:
+        that:
+          - git_projects_git_user_name is defined
+          - (git_projects_git_user_name | string | trim | length) > 0
+        fail_msg: "Set git_projects_git_user_name to a non-empty value before running this play."
+    - name: Set git user.name
+      ansible.builtin.git_config:
+        name: user.name
+        scope: global
+        value: "{{ git_projects_git_user_name }}"
+
+- name: Check existing git user.email
+  ansible.builtin.command: git config --global user.email
+  register: git_projects_existing_user_email
+  changed_when: false
+  failed_when: false
+  tags: [github_projects]
+
+- name: Configure git user.email when missing
+  when: git_projects_existing_user_email.rc != 0 or (git_projects_existing_user_email.stdout | default('') | trim == '')
+  tags: [github_projects]
+  block:
+    - name: Ensure git user.email default is provided
+      ansible.builtin.assert:
+        that:
+          - git_projects_git_user_email is defined
+          - (git_projects_git_user_email | string | trim | length) > 0
+        fail_msg: "Set git_projects_git_user_email to a non-empty value before running this play."
+    - name: Set git user.email
+      ansible.builtin.git_config:
+        name: user.email
+        scope: global
+        value: "{{ git_projects_git_user_email }}"
+
+- name: Ensure clone root directory exists
+  ansible.builtin.file:
+    path: "{{ git_projects_clone_root }}"
+    state: directory
+    mode: "0755"
+  tags: [github_projects]
+
+- name: Clone configured repositories
+  ansible.builtin.git:
+    repo: "{{ item.repo }}"
+    dest: "{{ item.dest | default(git_projects_clone_root ~ '/' ~ (item.name | default((item.repo | regex_replace('.*/', '') | regex_replace('\\.git$', ''))))) }}"
+    update: true
+  loop: "{{ git_projects_repositories }}"
+  when: git_projects_repositories | length > 0
+  tags: [github_projects]
