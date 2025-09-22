@@ -13,9 +13,9 @@ onepassword_ssh_agent_enabled: true
 git_projects_clone_root: "~/Projects"
 git_projects_repositories:
   - name: ansible-onepassword
-    repo: https://github.com/will-isles/ansible-onepassword
+    repo: git@github.com:will-isles/ansible-onepassword.git
   - name: ansible-linux
-    repo: https://github.com/will-isles/ansible-linux
+    repo: git@github.com:will-isles/ansible-linux.git
 
 git_projects_git_user_name: null
 git_projects_git_user_email: null
